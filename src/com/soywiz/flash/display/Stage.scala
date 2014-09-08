@@ -2,8 +2,8 @@ package com.soywiz.flash.display
 
 import java.awt.Color
 
-import com.soywiz.flash.backend.RenderContext
-import com.soywiz.flash.backend.swing.SwingRenderContext
+import com.soywiz.flash.backend.EngineContext
+import com.soywiz.flash.backend.swing.SwingEngineContext
 
 class Stage extends DisplayObjectContainer {
   /*
@@ -13,7 +13,7 @@ class Stage extends DisplayObjectContainer {
   */
   var backgroundColor = Color.black
 
-  override protected def renderInternal(context: RenderContext) = {
+  override protected def renderInternal(context: EngineContext) = {
     context.clear(backgroundColor)
     super.renderInternal(context)
   }

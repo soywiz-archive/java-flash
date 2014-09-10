@@ -1,7 +1,7 @@
 package com.soywiz.flash.backend.swing
 
 import java.awt.event.{ActionEvent, ActionListener}
-import java.awt.image.BufferedImage
+import java.awt.image.{VolatileImage, BufferedImage}
 import java.awt._
 import java.io.{File, ByteArrayInputStream}
 import javax.imageio.ImageIO
@@ -22,38 +22,105 @@ class SwingEngineContext(val width: Int, val height: Int, val root: Component) e
   }
 
   def loop() = {
+    frame = new JFrame("scala-flash")
+    g = null
+    alpha = 1.0f
+
+
+    val canvas = new Canvas() {
+      private var createdBuffers = false
+      private var volatileImg:VolatileImage = null
+
+      def update(): Unit = {
+        // create the hardware accelerated image.
+        createBackBuffer()
+
+        // Main rendering loop. Volatile images may lose their contents.
+        // This loop will continually render to (and produce if neccessary) volatile images
+        // until the rendering was completed successfully.
+        do {
+
+          // Validate the volatile image for the graphics configuration of this
+          // component. If the volatile image doesn't apply for this graphics configuration
+          // (in other words, the hardware acceleration doesn't apply for the new device)
+          // then we need to re-create it.
+          val gc = this.getGraphicsConfiguration
+          val valCode = volatileImg.validate(gc)
+
+          // This means the device doesn't match up to this hardware accelerated image.
+          if(valCode==VolatileImage.IMAGE_INCOMPATIBLE){
+            createBackBuffer(); // recreate the hardware accelerated image.
+          }
+
+          val offscreenGraphics = volatileImg.getGraphics
+
+          /*
+          if (!createdBuffers) {
+            createBufferStrategy(2)
+            createdBuffers = true
+          }
+          */
+
+          var strategy = getBufferStrategy
+
+          if (strategy == null || strategy.contentsLost) {
+            createBufferStrategy(2)
+            strategy = getBufferStrategy
+          }
+          g = strategy.getDrawGraphics.asInstanceOf[Graphics2D]
+          //g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
+          //g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC)
+          g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR)
+          root.render(context)
+
+          //doPaint(offscreenGraphics); // call core paint method.
+
+          // paint back buffer to main graphics
+          //g.drawImage(volatileImg, 0, 0, this);
+
+          g.dispose()
+          strategy.show()
+
+          // Test if content is lost
+        } while(volatileImg.contentsLost())
+      }
+
+      private def createBackBuffer() {
+        volatileImg = getGraphicsConfiguration.createCompatibleVolatileImage(getWidth, getHeight)
+      }
+
+      override def paint(g: Graphics): Unit = {
+        update()
+      }
+    }
+    frame.getContentPane.add(canvas)
+
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
+    frame.pack()
+    frame.setSize(width, height)
+    frame.setVisible(true)
+    frame.setLocationRelativeTo(null)
+
     val fps = 60.0f
     val frameMs = (1000 / fps).toInt
     var lastTime = System.currentTimeMillis
     while (true) {
-      var currentTime = System.currentTimeMillis
-      var deltaTime = (currentTime - lastTime).toInt
+      val currentTime = System.currentTimeMillis
+      val deltaTime = (currentTime - lastTime).toInt
       lastTime = currentTime
       root.update(deltaTime)
-      frame.repaint()
+      //frame.repaint()
+      canvas.update()
       Thread.sleep(frameMs)
     }
   }
 
-  val frame = new JFrame("scala-flash")
-  var gList = new mutable.Stack[Graphics2D]()
-  var g: Graphics2D = null
-  var context = this
-  var alpha = 1.0f
-  frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE)
-  frame.pack()
-  frame.setSize(width, height)
-  frame.setVisible(true)
-  frame.setLocationRelativeTo(null)
-  frame.add(new JPanel() {
-    this.setDoubleBuffered(true)
+  private var frame:JFrame = null
+  private var alpha:Float = 1.0f
+  //private val gList:mutable.Stack = new mutable.Stack[Graphics2D]()
+  private var g: Graphics2D = null
+  private val context = this
 
-    override def paintComponent(_g: Graphics): Unit = {
-      super.paintComponent(_g)
-      g = _g.asInstanceOf[Graphics2D]
-      root.render(context)
-    }
-  })
 
   override def clear(color: Color): Unit = {
     g.setColor(color)

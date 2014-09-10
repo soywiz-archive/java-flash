@@ -11,6 +11,7 @@ abstract class DisplayObject extends Component {
   var alpha = 1.0f
   var visible = true
   var parent: DisplayObjectContainer = null
+  var name:String = null
 
   def render(context: EngineContext): Unit = {
     if (!visible) return
@@ -23,7 +24,6 @@ abstract class DisplayObject extends Component {
       renderInternal(context)
     })
   }
-
 
   override def update(dt: Int): Unit = {
 

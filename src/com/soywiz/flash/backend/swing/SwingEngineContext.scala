@@ -3,17 +3,19 @@ package com.soywiz.flash.backend.swing
 import java.awt.event.{MouseWheelEvent, MouseEvent, ActionEvent, ActionListener}
 import java.awt.image.{VolatileImage, BufferedImage}
 import java.awt._
-import java.io.{File, ByteArrayInputStream}
+import java.io.{InputStream, FileInputStream, File, ByteArrayInputStream}
 import javax.imageio.ImageIO
 import javax.swing.{JFrame, JPanel, Timer}
 
 import com.soywiz.flash.backend.Component
 import com.soywiz.flash.backend._
-import com.soywiz.flash.util.Point
+import com.soywiz.flash.util.{Color, Point}
 
 import scala.collection.mutable
 
 class SwingEngineContext(val width: Int, val height: Int) extends EngineContext {
+  EngineContext.instance = this
+
   def setTimeout(callback: () => Unit, ms: Int) = {
     new Timer(ms, new ActionListener {
       override def actionPerformed(e: ActionEvent): Unit = {
@@ -152,14 +154,18 @@ class SwingEngineContext(val width: Int, val height: Int) extends EngineContext 
   private var g: Graphics2D = null
   private val context = this
 
+  override def openFile(path:String):InputStream = {
+    println(System.getProperty("user.dir") + "/assets/" + path)
+    new FileInputStream(System.getProperty("user.dir") + "/assets/" + path)
+  }
 
   override def clear(color: Color): Unit = {
-    g.setColor(color)
+    g.setColor(new java.awt.Color(color.r, color.g, color.b, color.a))
     g.fillRect(0, 0, frame.getWidth, frame.getHeight)
   }
 
   override def drawSolid(width: Int, height: Int, color: Color): Unit = {
-    g.setColor(color)
+    g.setColor(new java.awt.Color(color.r, color.g, color.b, color.a))
     g.fillRect(0, 0, width, height)
   }
 
@@ -206,9 +212,11 @@ class SwingEngineContext(val width: Int, val height: Int) extends EngineContext 
     new Texture(new SwingTextureBase(image), 0, 0, image.getWidth, image.getHeight)
   }
 
+  /*
   override def createImageFromFile(file:File): Texture = {
     val image = ImageIO.read(file)
     new Texture(new SwingTextureBase(image), 0, 0, image.getWidth, image.getHeight)
   }
+  */
 }
 

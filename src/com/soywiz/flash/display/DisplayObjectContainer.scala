@@ -1,6 +1,7 @@
 package com.soywiz.flash.display
 
 import com.soywiz.flash.backend.EngineContext
+import com.soywiz.flash.util.{Point, Rectangle}
 
 import scala.collection.mutable.ListBuffer
 
@@ -31,9 +32,18 @@ abstract class DisplayObjectContainer extends DisplayObject {
 
   def getChildByName(name:String) = transformChild(children.find(item => item.name == name).get)
 
+  override def getLocalUntransformedBounds = {
+    Rectangle.bounds(children.map(child => child.getLocalUntransformedBounds).toList)
+  }
+
   override def update(dt: Int): Unit = {
     super.update(dt)
     for (child <- children) child.update(dt)
+  }
+
+  override def touchUpdate(point: Point, kind: Int) = {
+    super.touchUpdate(point, kind)
+    for (child <- children) child.touchUpdate(point, kind)
   }
 
   override protected def renderInternal(context: EngineContext): Unit = {

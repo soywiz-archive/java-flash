@@ -40,21 +40,26 @@ class SwingEngineContext(val width: Int, val height: Int) extends EngineContext 
 
       override def processMouseEvent(e: MouseEvent): Unit = {
         super.processMouseEvent(e)
-        println(s"processMouseEvent:$e")
+
+        root.touchUpdate(new Point(e.getX, e.getY), 1)
+        //println(s"processMouseEvent:$e")
       }
 
       override def processMouseMotionEvent(e: MouseEvent): Unit = {
         super.processMouseMotionEvent(e)
+
+        root.touchUpdate(new Point(e.getX, e.getY), 0)
+
         e.getID match {
           case MouseEvent.MOUSE_MOVED =>
           case _ =>
         }
-        println(s"processMouseMotionEvent:$e")
+        //println(s"processMouseMotionEvent:$e")
       }
 
       override def processMouseWheelEvent(e: MouseWheelEvent): Unit = {
         super.processMouseWheelEvent(e)
-        println(s"processMouseWheelEvent:$e")
+        //println(s"processMouseWheelEvent:$e")
       }
 
       def update(): Unit = {

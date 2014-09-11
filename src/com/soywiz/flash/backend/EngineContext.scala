@@ -5,7 +5,13 @@ import java.io.File
 
 import com.soywiz.flash.util.Point
 
+object EngineContext {
+  var instance:EngineContext = null
+}
+
 trait EngineContext {
+  EngineContext.instance = this
+
   def clear(color:Color)
   def drawSolid(width:Int, height:Int, color:Color): Unit
   def drawImage(width: Int, height: Int, texture: Texture): Unit

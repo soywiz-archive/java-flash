@@ -1,9 +1,11 @@
 package com.soywiz.flash.display
 
 import com.soywiz.flash.backend.{Component, EngineContext}
-import com.soywiz.flash.util.{Point, Matrix}
+import com.soywiz.flash.util.{Signal, Rectangle, Point, Matrix}
 
-abstract class DisplayObject extends Component {
+import scala.collection.mutable.ListBuffer
+
+abstract class DisplayObject extends DisplayObjectBase {
   var x = 0.0f
   var y = 0.0f
   var scaleX = 1.0f
@@ -13,6 +15,10 @@ abstract class DisplayObject extends Component {
   var visible = true
   var parent: DisplayObjectContainer = null
   var name:String = null
+
+  val onMouseUpdate = ListBuffer[MouseUpdate]()
+
+  def interactive = onMouseUpdate.length > 0
 
   def stage: Stage = parent match {
     case stage:Stage => stage
@@ -33,6 +39,24 @@ abstract class DisplayObject extends Component {
   }
 
   protected def renderInternal(context: EngineContext): Unit = {
+  }
+
+  private var lastInside = false
+  def touchUpdate(point: Point, kind: Int) = {
+    if (interactive) {
+      val globalBounds = this.globalBounds
+      val inside = globalBounds.contains(point)
+      val localPoint = globalToLocal(point)
+
+      if (inside) {
+        if (!lastInside) for (item <- onMouseUpdate) item.over(localPoint)
+        for (item <- onMouseUpdate) item.move(localPoint)
+      } else {
+        if (lastInside) for (item <- onMouseUpdate) item.out(localPoint)
+      }
+
+      lastInside = inside
+    }
   }
 
   override def update(dt: Int): Unit = {
@@ -57,11 +81,30 @@ abstract class DisplayObject extends Component {
     output
   }
 
-  def localToGlobal(point: Point): Point = {
+  /*
+  def width: Int = 0
+  def height: Int = 0
+  def width_= (value:Int) { }
+  def height_= (value:Int) { }
+  */
+
+  final def globalBounds:Rectangle = {
+    getLocalUntransformedBounds.transform(globalTransformMatrix())
+  }
+
+  final def localBounds = {
+    getLocalUntransformedBounds.transform(transformMatrix)
+  }
+
+  def getLocalUntransformedBounds = {
+    new Rectangle(0, 0, 0, 0)
+  }
+
+  final def localToGlobal(point: Point): Point = {
     globalTransformMatrix().transformPoint(point)
   }
 
-  def globalToLocal(point: Point): Point = {
+  final def globalToLocal(point: Point): Point = {
     globalTransformMatrix().invert().transformPoint(point)
   }
 }

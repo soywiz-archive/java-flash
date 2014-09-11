@@ -3,6 +3,8 @@ package com.soywiz.flash.backend
 import java.awt.Color
 import java.io.File
 
+import com.soywiz.flash.util.Point
+
 trait EngineContext {
   def clear(color:Color)
   def drawSolid(width:Int, height:Int, color:Color): Unit
@@ -14,4 +16,6 @@ trait EngineContext {
   def scale(sx:Float, sy:Float): Unit
   def rotate(angle:Float): Unit
   def alpha(alpha: Float): Unit
+  def loop(root:Component): Unit
+  def mousePosition: Point
 }

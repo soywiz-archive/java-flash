@@ -1,6 +1,6 @@
 package com.soywiz.flash.backend.swing
 
-import java.awt.event.{ActionEvent, ActionListener}
+import java.awt.event.{MouseWheelEvent, MouseEvent, ActionEvent, ActionListener}
 import java.awt.image.{VolatileImage, BufferedImage}
 import java.awt._
 import java.io.{File, ByteArrayInputStream}
@@ -9,10 +9,11 @@ import javax.swing.{JFrame, JPanel, Timer}
 
 import com.soywiz.flash.backend.Component
 import com.soywiz.flash.backend._
+import com.soywiz.flash.util.Point
 
 import scala.collection.mutable
 
-class SwingEngineContext(val width: Int, val height: Int, val root: Component) extends EngineContext {
+class SwingEngineContext(val width: Int, val height: Int) extends EngineContext {
   def setTimeout(callback: () => Unit, ms: Int) = {
     new Timer(ms, new ActionListener {
       override def actionPerformed(e: ActionEvent): Unit = {
@@ -21,15 +22,40 @@ class SwingEngineContext(val width: Int, val height: Int, val root: Component) e
     }).start()
   }
 
-  def loop() = {
+  def mousePosition: Point = new Point(0, 0)
+
+  def loop(root:Component) = {
     frame = new JFrame("scala-flash")
     g = null
     alpha = 1.0f
 
 
     val canvas = new Canvas() {
-      private var createdBuffers = false
+      //private var createdBuffers = false
       private var volatileImg:VolatileImage = null
+
+      enableEvents(AWTEvent.MOUSE_EVENT_MASK |
+        AWTEvent.MOUSE_MOTION_EVENT_MASK |
+        AWTEvent.KEY_EVENT_MASK)
+
+      override def processMouseEvent(e: MouseEvent): Unit = {
+        super.processMouseEvent(e)
+        println(s"processMouseEvent:$e")
+      }
+
+      override def processMouseMotionEvent(e: MouseEvent): Unit = {
+        super.processMouseMotionEvent(e)
+        e.getID match {
+          case MouseEvent.MOUSE_MOVED =>
+          case _ =>
+        }
+        println(s"processMouseMotionEvent:$e")
+      }
+
+      override def processMouseWheelEvent(e: MouseWheelEvent): Unit = {
+        super.processMouseWheelEvent(e)
+        println(s"processMouseWheelEvent:$e")
+      }
 
       def update(): Unit = {
         // create the hardware accelerated image.

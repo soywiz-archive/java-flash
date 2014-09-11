@@ -15,6 +15,13 @@ class Matrix(var a:Float = 1, var b:Float = 0, var c:Float = 0, var d:Float = 1,
     tx = tx1
   }
 
+  def preconcat(m: Matrix) = {
+    val temp = new Matrix()
+    temp.copyFrom(m)
+    temp.concat(this)
+    this.copyFrom(temp)
+  }
+
   def copyFrom(sourceMatrix: Matrix) = {
     a = sourceMatrix.a
     b = sourceMatrix.b
@@ -31,6 +38,7 @@ class Matrix(var a:Float = 1, var b:Float = 0, var c:Float = 0, var d:Float = 1,
     this.d = d
     this.tx = tx
     this.ty = ty
+    this
   }
 
   def identity() = {
@@ -64,16 +72,20 @@ class Matrix(var a:Float = 1, var b:Float = 0, var c:Float = 0, var d:Float = 1,
       ty = -b * tx - d * ty
       tx = tx1
     }
+
+    this
   }
 
-  def mult(m: Matrix) = new Matrix(
-    a * m.a + b * m.c,
-    a * m.b + b * m.d,
-    c * m.a + d * m.c,
-    c * m.b + d * m.d,
-    tx * m.a + ty * m.c + m.tx,
-    tx * m.b + ty * m.d + m.ty
-  )
+  def mult(m: Matrix) = {
+    setTo(
+      a * m.a + b * m.c,
+      a * m.b + b * m.d,
+      c * m.a + d * m.c,
+      c * m.b + d * m.d,
+      tx * m.a + ty * m.c + m.tx,
+      tx * m.b + ty * m.d + m.ty
+    )
+  }
 
   def rotate(theta: Float) = {
     val cos = Math.cos(theta).toFloat

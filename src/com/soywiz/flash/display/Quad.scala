@@ -10,9 +10,6 @@ class Quad extends DisplayObject {
   var color:Color = Color.red
 
   override protected def renderInternal(context: EngineContext): Unit = {
-    context.keep(() => {
-      super.renderInternal(context)
-      context.drawSolid(width, height, color)
-    })
+    context.drawSolid(width, height, color)
   }
 }

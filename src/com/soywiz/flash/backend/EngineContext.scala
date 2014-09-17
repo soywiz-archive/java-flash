@@ -2,7 +2,6 @@ package com.soywiz.flash.backend
 
 import java.io.{InputStream, File}
 
-import android.hardware.usb.UsbInterface
 import com.soywiz.flash.util.{Color, Point}
 import org.apache.commons.io.IOUtils
 
@@ -29,6 +28,8 @@ trait EngineContext {
   }
 
   def createImageFromBytes(data: Array[Byte]): Texture
+
+  def drawText(x:Float, y:Float, text:String, color: Color): Unit
 
   def keep(callback: () => Unit): Unit
 

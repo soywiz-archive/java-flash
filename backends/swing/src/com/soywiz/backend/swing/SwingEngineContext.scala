@@ -160,18 +160,27 @@ class SwingEngineContext(val width: Int, val height: Int) extends EngineContext 
   }
 
   override def clear(color: Color): Unit = {
-    g.setColor(new java.awt.Color(color.r, color.g, color.b, color.a))
+    g.setColor(convertColor(color))
     g.fillRect(0, 0, frame.getWidth, frame.getHeight)
   }
 
   override def drawSolid(width: Int, height: Int, color: Color): Unit = {
-    g.setColor(new java.awt.Color(color.r, color.g, color.b, color.a))
+    g.setColor(convertColor(color))
     g.fillRect(0, 0, width, height)
   }
 
   override def drawImage(width: Int, height: Int, texture: Texture): Unit = {
     val base = texture.base.asInstanceOf[SwingTextureBase]
     g.drawImage(base.image, 0, 0, width, height, texture.x, texture.y, texture.x + texture.width, texture.y + texture.height, null)
+  }
+
+  private def convertColor(color:Color): java.awt.Color = {
+    new java.awt.Color(color.r, color.g, color.b, color.a)
+  }
+
+  override def drawText(x: Float, y: Float, text: String, color: Color): Unit = {
+    g.setColor(convertColor(color))
+    g.drawString(text, x, y);
   }
 
   override def translate(x: Float, y: Float): Unit = {

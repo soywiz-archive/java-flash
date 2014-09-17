@@ -14,6 +14,9 @@ import com.soywiz.flash.util.{Color, Point}
 import scala.collection.mutable
 
 class SwingEngineContext(val width: Int, val height: Int) extends EngineContext {
+  //System.setProperty("awt.useSystemAAFontSettings","on")
+  //System.setProperty("swing.aatext", "true")
+
   EngineContext.instance = this
 
   def setTimeout(callback: () => Unit, ms: Int) = {
@@ -180,7 +183,10 @@ class SwingEngineContext(val width: Int, val height: Int) extends EngineContext 
 
   override def drawText(x: Float, y: Float, text: String, color: Color): Unit = {
     g.setColor(convertColor(color))
-    g.drawString(text, x, y);
+    g.setFont(new Font("TimesRoman", Font.PLAIN, 20))
+    g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON)
+    //g.getFontRenderContext.
+    g.drawString(text, x, y)
   }
 
   override def translate(x: Float, y: Float): Unit = {

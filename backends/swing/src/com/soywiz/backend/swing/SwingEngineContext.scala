@@ -29,7 +29,7 @@ class SwingEngineContext(val width: Int, val height: Int) extends EngineContext 
 
   def mousePosition: Point = new Point(0, 0)
 
-  def loop(root:Component) = {
+  def loop(root: Component) = {
     frame = new JFrame("scala-flash")
     g = null
     alpha = 1.0f
@@ -37,7 +37,7 @@ class SwingEngineContext(val width: Int, val height: Int) extends EngineContext 
 
     val canvas = new Canvas() {
       //private var createdBuffers = false
-      private var volatileImg:VolatileImage = null
+      private var volatileImg: VolatileImage = null
 
       enableEvents(AWTEvent.MOUSE_EVENT_MASK |
         AWTEvent.MOUSE_MOTION_EVENT_MASK |
@@ -84,7 +84,7 @@ class SwingEngineContext(val width: Int, val height: Int) extends EngineContext 
           val valCode = volatileImg.validate(gc)
 
           // This means the device doesn't match up to this hardware accelerated image.
-          if(valCode==VolatileImage.IMAGE_INCOMPATIBLE){
+          if (valCode == VolatileImage.IMAGE_INCOMPATIBLE) {
             createBackBuffer(); // recreate the hardware accelerated image.
           }
 
@@ -118,7 +118,7 @@ class SwingEngineContext(val width: Int, val height: Int) extends EngineContext 
           strategy.show()
 
           // Test if content is lost
-        } while(volatileImg.contentsLost())
+        } while (volatileImg.contentsLost())
       }
 
       private def createBackBuffer() {
@@ -151,13 +151,13 @@ class SwingEngineContext(val width: Int, val height: Int) extends EngineContext 
     }
   }
 
-  private var frame:JFrame = null
-  private var alpha:Float = 1.0f
+  private var frame: JFrame = null
+  private var alpha: Float = 1.0f
   //private val gList:mutable.Stack = new mutable.Stack[Graphics2D]()
   private var g: Graphics2D = null
   private val context = this
 
-  override def openFile(path:String):InputStream = {
+  override def openFile(path: String): InputStream = {
     println(System.getProperty("user.dir") + "/assets/" + path)
     new FileInputStream(System.getProperty("user.dir") + "/assets/" + path)
   }
@@ -177,16 +177,19 @@ class SwingEngineContext(val width: Int, val height: Int) extends EngineContext 
     g.drawImage(base.image, 0, 0, width, height, texture.x, texture.y, texture.x + texture.width, texture.y + texture.height, null)
   }
 
-  private def convertColor(color:Color): java.awt.Color = {
+  private def convertColor(color: Color): java.awt.Color = {
     new java.awt.Color(color.r, color.g, color.b, color.a)
   }
 
-  override def drawText(x: Float, y: Float, text: String, color: Color): Unit = {
+  override def drawText(x: Float, y: Float, width: Float, height: Float, text: String, fontFamily: String, color: Color, size: Int, align: TextAlign): Unit = {
     g.setColor(convertColor(color))
-    g.setFont(new Font("TimesRoman", Font.PLAIN, 20))
+    g.setFont(new Font(fontFamily, Font.PLAIN, size))
+    val fm = g.getFontMetrics
+    val textWidth = fm.stringWidth(text)
     g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON)
     //g.getFontRenderContext.
-    g.drawString(text, x, y)
+    g.clipRect(x.toInt, y.toInt, width.toInt, height.toInt)
+    g.drawString(text, (x + (width - textWidth) * align.ratio).toInt, y + fm.getAscent)
   }
 
   override def translate(x: Float, y: Float): Unit = {
@@ -222,7 +225,7 @@ class SwingEngineContext(val width: Int, val height: Int) extends EngineContext 
     }
   }
 
-  override def createImageFromBytes(data:Array[Byte]): Texture = {
+  override def createImageFromBytes(data: Array[Byte]): Texture = {
     val image = ImageIO.read(new ByteArrayInputStream(data))
     new Texture(new SwingTextureBase(image), 0, 0, image.getWidth, image.getHeight)
   }

@@ -29,7 +29,7 @@ trait EngineContext {
 
   def createImageFromBytes(data: Array[Byte]): Texture
 
-  def drawText(x:Float, y:Float, text:String, color: Color): Unit
+  def drawText(x:Float, y:Float, width:Float, height:Float, text:String, fontFamily:String, color: Color, size:Int, align:TextAlign): Unit
 
   def keep(callback: () => Unit): Unit
 

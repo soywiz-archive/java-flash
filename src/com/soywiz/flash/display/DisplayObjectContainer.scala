@@ -1,6 +1,6 @@
 package com.soywiz.flash.display
 
-import com.soywiz.flash.backend.EngineContext
+import com.soywiz.flash.backend.{TouchEventType, EngineContext}
 import com.soywiz.flash.util.{Point, Rectangle}
 
 import scala.collection.mutable.ListBuffer
@@ -38,10 +38,12 @@ abstract class DisplayObjectContainer extends DisplayObject {
 
   override def update(dt: Int): Unit = {
     super.update(dt)
-    for (child <- children) child.update(dt)
+    for (child <- children) {
+      if (child.updating) child.update((dt * child.updateSpeed).toInt)
+    }
   }
 
-  override def touchUpdate(point: Point, kind: Int) = {
+  override def touchUpdate(point: Point, kind: TouchEventType) = {
     super.touchUpdate(point, kind)
     for (child <- children) child.touchUpdate(point, kind)
   }

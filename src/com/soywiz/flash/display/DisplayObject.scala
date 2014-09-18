@@ -1,20 +1,23 @@
 package com.soywiz.flash.display
 
-import com.soywiz.flash.backend.{Component, EngineContext}
+import com.soywiz.flash.backend.{TouchEventType, Updatable, Component, EngineContext}
 import com.soywiz.flash.util.{Signal, Rectangle, Point, Matrix}
 
 import scala.collection.mutable.ListBuffer
 
 abstract class DisplayObject extends DisplayObjectBase {
-  var x = 0.0f
-  var y = 0.0f
-  var scaleX = 1.0f
-  var scaleY = 1.0f
-  var rotation = 0.0f
-  var alpha = 1.0f
+  var x = 0.0
+  var y = 0.0
+  var scaleX = 1.0
+  var scaleY = 1.0
+  var rotation = 0.0
+  var alpha = 1.0
   var visible = true
   var parent: DisplayObjectContainer = null
   var name:String = null
+  var updating:Boolean = true
+  var updateSpeed:Double = 1.0
+  val components:ListBuffer[Updatable] = ListBuffer()
 
   val onMouseUpdate = ListBuffer[MouseUpdate]()
 
@@ -30,10 +33,10 @@ abstract class DisplayObject extends DisplayObjectBase {
     if (!visible) return
 
     context.keep(() => {
-      context.translate(x, y)
-      context.rotate(rotation)
-      context.scale(scaleX, scaleY)
-      context.alpha(alpha)
+      context.translate(x.toFloat, y.toFloat)
+      context.rotate(Math.toRadians(rotation).toFloat)
+      context.scale(scaleX.toFloat, scaleY.toFloat)
+      context.alpha(alpha.toFloat)
       renderInternal(context)
     })
   }
@@ -42,15 +45,19 @@ abstract class DisplayObject extends DisplayObjectBase {
   }
 
   private var lastInside = false
-  def touchUpdate(point: Point, kind: Int) = {
+  def touchUpdate(point: Point, kind: TouchEventType) = {
     if (interactive) {
       val globalBounds = this.globalBounds
       val inside = globalBounds.contains(point)
       val localPoint = globalToLocal(point)
 
       if (inside) {
-        if (!lastInside) for (item <- onMouseUpdate) item.over(localPoint)
-        for (item <- onMouseUpdate) item.move(localPoint)
+        if (kind == TouchEventType.Click) {
+          for (item <- onMouseUpdate) item.click(localPoint)
+        } else {
+          if (!lastInside) for (item <- onMouseUpdate) item.over(localPoint)
+          for (item <- onMouseUpdate) item.move(localPoint)
+        }
       } else {
         if (lastInside) for (item <- onMouseUpdate) item.out(localPoint)
       }
@@ -60,13 +67,14 @@ abstract class DisplayObject extends DisplayObjectBase {
   }
 
   override def update(dt: Int): Unit = {
+    for (component <- components) component.update(dt)
   }
 
   def transformMatrix = {
     val matrix = new Matrix()
-    matrix.translate(x, y)
-    matrix.rotate(rotation)
-    matrix.scale(scaleX, scaleY)
+    matrix.translate(x.toFloat, y.toFloat)
+    matrix.rotate(Math.toRadians(rotation).toFloat)
+    matrix.scale(scaleX.toFloat, scaleY.toFloat)
     matrix
   }
 

@@ -39,21 +39,30 @@ class SwingEngineContext(val width: Int, val height: Int) extends EngineContext 
       //private var createdBuffers = false
       private var volatileImg: VolatileImage = null
 
-      enableEvents(AWTEvent.MOUSE_EVENT_MASK |
+      enableEvents(
+        AWTEvent.MOUSE_EVENT_MASK |
         AWTEvent.MOUSE_MOTION_EVENT_MASK |
-        AWTEvent.KEY_EVENT_MASK)
+        AWTEvent.KEY_EVENT_MASK
+      )
 
       override def processMouseEvent(e: MouseEvent): Unit = {
         super.processMouseEvent(e)
 
-        root.touchUpdate(new Point(e.getX, e.getY), 1)
+        e.getID match {
+          case MouseEvent.MOUSE_ENTERED | MouseEvent.MOUSE_PRESSED | MouseEvent.MOUSE_RELEASED =>
+            root.touchUpdate(new Point(e.getX, e.getY), TouchEventType.Move)
+          case MouseEvent.MOUSE_CLICKED =>
+            root.touchUpdate(new Point(e.getX, e.getY), TouchEventType.Click)
+          case _ =>
+        }
+
         //println(s"processMouseEvent:$e")
       }
 
       override def processMouseMotionEvent(e: MouseEvent): Unit = {
         super.processMouseMotionEvent(e)
 
-        root.touchUpdate(new Point(e.getX, e.getY), 0)
+        root.touchUpdate(new Point(e.getX, e.getY), TouchEventType.Move)
 
         e.getID match {
           case MouseEvent.MOUSE_MOVED =>

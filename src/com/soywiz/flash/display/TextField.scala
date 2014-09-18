@@ -13,7 +13,7 @@ class TextField extends DisplayObject {
   var align = TextAlign.Left
 
   override protected def renderInternal(context: EngineContext): Unit = {
-    context.drawText(x, y, width, height, text, fontFamily, color, size, align)
+    context.drawText(x.toFloat, y.toFloat, width, height, text, fontFamily, color, size, align)
   }
 
   override def getLocalUntransformedBounds: Rectangle = new Rectangle(0, 0, width, height)

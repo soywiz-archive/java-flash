@@ -23,6 +23,11 @@ abstract class DisplayObject extends DisplayObjectBase {
 
   def interactive = onMouseUpdate.length > 0
 
+  def getComponent[T <: Updatable](clazz:Class[T]): T = {
+    for (component <- components) if (component.getClass == clazz) return component.asInstanceOf[T]
+    throw new Exception(s"Can't find component of class '$clazz'")
+  }
+
   def stage: Stage = parent match {
     case stage:Stage => stage
     case null => null

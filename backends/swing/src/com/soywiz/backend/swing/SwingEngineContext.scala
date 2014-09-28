@@ -51,6 +51,13 @@ class SwingEngineContext(val width: Int, val height: Int) extends EngineContext 
         e.getID match {
           case MouseEvent.MOUSE_ENTERED | MouseEvent.MOUSE_PRESSED | MouseEvent.MOUSE_RELEASED =>
             root.touchUpdate(new Point(e.getX, e.getY), TouchEventType.Move)
+            e.getID match {
+              case MouseEvent.MOUSE_RELEASED =>
+                root.touchUpdate(new Point(e.getX, e.getY), TouchEventType.Up)
+              case MouseEvent.MOUSE_PRESSED =>
+                root.touchUpdate(new Point(e.getX, e.getY), TouchEventType.Down)
+              case _ =>
+            }
           case MouseEvent.MOUSE_CLICKED =>
             root.touchUpdate(new Point(e.getX, e.getY), TouchEventType.Click)
           case _ =>

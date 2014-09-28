@@ -14,12 +14,16 @@ abstract class DisplayObject extends DisplayObjectBase {
   var alpha = 1.0
   var visible = true
   var parent: DisplayObjectContainer = null
+  private[display] var prev:DisplayObject = null
+  private[display] var next:DisplayObject = null
+
   var name:String = null
   var updating:Boolean = true
   var updateSpeed:Double = 1.0
   val components:ListBuffer[Updatable] = ListBuffer()
 
   val onMouseUpdate = ListBuffer[MouseUpdate]()
+  val onMouseTapAny = ListBuffer[(Point) => Unit]()
 
   def interactive = onMouseUpdate.length > 0
 
@@ -50,7 +54,13 @@ abstract class DisplayObject extends DisplayObjectBase {
   }
 
   private var lastInside = false
-  def touchUpdate(point: Point, kind: TouchEventType) = {
+  def touchUpdate(point: Point, kind: TouchEventType): Unit = {
+    if (onMouseTapAny.length > 0) {
+      if (kind == TouchEventType.Down) {
+        for (item <- onMouseTapAny) item(new Point(0, 0))
+      }
+    }
+
     if (interactive) {
       val globalBounds = this.globalBounds
       val inside = globalBounds.contains(point)

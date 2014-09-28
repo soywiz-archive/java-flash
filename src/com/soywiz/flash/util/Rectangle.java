@@ -1,7 +1,5 @@
 package com.soywiz.flash.util;
 
-import java.util.Collection;
-
 final public class Rectangle {
     public final float x, y, width, height;
 
@@ -22,14 +20,33 @@ final public class Rectangle {
     }
 
 
-    public float left() { return x; }
-    public float top() { return y; }
-    public float right() { return x + width; }
-    public float bottom() { return y + height; }
+    public float left() {
+        return x;
+    }
 
-    public Point topLeft() { return new Point(left(), top()); }
-    public Point bottomRight() { return new Point(right(), bottom()); }
-    public Size size() { return new Size(width, height); }
+    public float top() {
+        return y;
+    }
+
+    public float right() {
+        return x + width;
+    }
+
+    public float bottom() {
+        return y + height;
+    }
+
+    public Point topLeft() {
+        return new Point(left(), top());
+    }
+
+    public Point bottomRight() {
+        return new Point(right(), bottom());
+    }
+
+    public Size size() {
+        return new Size(width, height);
+    }
 
     static public Rectangle fromBounds(float left, float top, float right, float bottom) {
         return new Rectangle(left, top, right - left, bottom - top);
@@ -59,6 +76,7 @@ final public class Rectangle {
             return Rectangle.empty;
         }
     }
+
     public Rectangle transform(Matrix matrix) {
         return Rectangle.fromBounds(matrix.transformPoint(topLeft()), matrix.transformPoint(bottomRight()));
     }

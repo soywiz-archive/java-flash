@@ -13,6 +13,8 @@ public class Image extends DisplayObject {
     }
 
     @Override
-    public Rectangle getLocalUntransformedBounds() { return new Rectangle(0, 0, texture.width, texture.height); }
+    public Rectangle getLocalUntransformedBounds() {
+        return new Rectangle(0, 0, texture.width, texture.height);
+    }
 
 }

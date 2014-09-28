@@ -1,6 +1,5 @@
 package com.soywiz.flash.display;
 
-import com.soywiz.flash.backend.Component;
 import com.soywiz.flash.backend.EngineContext;
 import com.soywiz.flash.backend.TouchEventType;
 import com.soywiz.flash.backend.Updatable;
@@ -32,11 +31,13 @@ abstract public class DisplayObject extends DisplayObjectBase {
     List<MouseUpdate> onMouseUpdate = new LinkedList<>();
     List<SignalHandler<Point>> onMouseTapAny = new LinkedList<>();
 
-    public boolean interactive() { return onMouseUpdate.size() > 0; }
+    public boolean interactive() {
+        return onMouseUpdate.size() > 0;
+    }
 
     public <T extends Updatable> T getComponent(Class<T> clazz) {
-        for (Updatable component : components) if (component.getClass() == clazz) return (T)component;
-        throw(new RuntimeException("Can't find component of class '" + clazz + "'"));
+        for (Updatable component : components) if (component.getClass() == clazz) return (T) component;
+        throw (new RuntimeException("Can't find component of class '" + clazz + "'"));
     }
 
     /*
@@ -57,10 +58,10 @@ abstract public class DisplayObject extends DisplayObjectBase {
 
         try {
             context.save();
-            context.translate((float)x, (float)y);
-            context.rotate((float)Math.toRadians(rotation));
-            context.scale((float)scaleX, (float)scaleY);
-            context.alpha((float)alpha);
+            context.translate((float) x, (float) y);
+            context.rotate((float) Math.toRadians(rotation));
+            context.scale((float) scaleX, (float) scaleY);
+            context.alpha((float) alpha);
             renderInternal(context);
         } finally {
             context.restore();
@@ -111,14 +112,17 @@ abstract public class DisplayObject extends DisplayObjectBase {
 
     public Matrix transformMatrix() {
         Matrix matrix = new Matrix();
-        matrix.translate((float)x, (float)y);
-        matrix.rotate((float)Math.toRadians(rotation));
-        matrix.scale((float)scaleX, (float)scaleY);
+        matrix.translate((float) x, (float) y);
+        matrix.rotate((float) Math.toRadians(rotation));
+        matrix.scale((float) scaleX, (float) scaleY);
         return matrix;
     }
 
 
-    public Matrix globalTransformMatrix() { return globalTransformMatrix(new Matrix()); }
+    public Matrix globalTransformMatrix() {
+        return globalTransformMatrix(new Matrix());
+    }
+
     public Matrix globalTransformMatrix(Matrix output) {
         DisplayObject node = this;
         while (node != null) {

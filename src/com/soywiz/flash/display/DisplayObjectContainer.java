@@ -4,7 +4,6 @@ import com.soywiz.flash.backend.EngineContext;
 import com.soywiz.flash.backend.TouchEventType;
 import com.soywiz.flash.util.Point;
 import com.soywiz.flash.util.Rectangle;
-import sun.tools.jconsole.Plotter;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -15,7 +14,9 @@ abstract public class DisplayObjectContainer extends DisplayObject {
     private int _numChildren = 0;
     //private var children:Array[DisplayObject] = new Array[DisplayObject](0)
 
-    public int numChildren() { return _numChildren; }
+    public int numChildren() {
+        return _numChildren;
+    }
 
     private void _addChildNode(DisplayObject child) {
         if (child == null) throw new RuntimeException("Invalid child");
@@ -69,7 +70,9 @@ abstract public class DisplayObjectContainer extends DisplayObject {
         while (last != null) _removeChildNode(last);
     }
 
-    protected DisplayObject transformChild(DisplayObject child) { return child; }
+    protected DisplayObject transformChild(DisplayObject child) {
+        return child;
+    }
 
     public DisplayObject getChildAt(int index) {
         int currentIndex = 0;
@@ -106,7 +109,7 @@ abstract public class DisplayObjectContainer extends DisplayObject {
         super.update(dt);
         DisplayObject child = this.first;
         while (child != null) {
-            if (child.updating) child.update((int)(dt * child.updateSpeed));
+            if (child.updating) child.update((int) (dt * child.updateSpeed));
             child = child.next;
         }
     }

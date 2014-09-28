@@ -16,10 +16,12 @@ public class TextField extends DisplayObject {
 
     @Override
     protected void renderInternal(EngineContext context) {
-        context.drawText((float)x, (float)y, width, height, text, fontFamily, color, size, align);
+        context.drawText((float) x, (float) y, width, height, text, fontFamily, color, size, align);
     }
 
     @Override
-    public Rectangle getLocalUntransformedBounds() { return new Rectangle(0, 0, width, height); }
+    public Rectangle getLocalUntransformedBounds() {
+        return new Rectangle(0, 0, width, height);
+    }
 
 }

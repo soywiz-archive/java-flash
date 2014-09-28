@@ -102,8 +102,8 @@ public class Matrix {
     }
 
     public void rotate(float theta) {
-        float cos = (float)Math.cos(theta);
-        float sin = (float)Math.sin(theta);
+        float cos = (float) Math.cos(theta);
+        float sin = (float) Math.sin(theta);
 
         float a1 = a * cos - b * sin;
         b = a * sin + b * cos;

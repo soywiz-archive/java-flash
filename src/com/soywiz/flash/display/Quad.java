@@ -15,6 +15,8 @@ public class Quad extends DisplayObject {
     }
 
     @Override
-    public Rectangle getLocalUntransformedBounds() { return new Rectangle(0, 0, width, height); }
+    public Rectangle getLocalUntransformedBounds() {
+        return new Rectangle(0, 0, width, height);
+    }
 
 }

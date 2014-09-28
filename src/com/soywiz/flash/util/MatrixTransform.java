@@ -14,7 +14,7 @@ public class MatrixTransform {
     }
 
     static MatrixTransform fromMatrix(Matrix matrix) {
-        float M_PI_4 = (float)(Math.PI / 4.0);
+        float M_PI_4 = (float) (Math.PI / 4.0);
         float rotation = 0;
         float skewX = 0;
         float skewY = 0;
@@ -22,8 +22,8 @@ public class MatrixTransform {
         float x = matrix.tx;
         float y = matrix.ty;
 
-        skewX = (float)Math.atan(-matrix.c / matrix.d);
-        skewY = (float)Math.atan(matrix.b / matrix.a);
+        skewX = (float) Math.atan(-matrix.c / matrix.d);
+        skewY = (float) Math.atan(matrix.b / matrix.a);
 
         if (Float.isNaN(skewX)) skewX = 0.0f;
         if (Float.isNaN(skewY)) skewY = 0.0f;
@@ -39,7 +39,7 @@ public class MatrixTransform {
             rotation = 0;
         }
 
-        return new MatrixTransform(x, y, (float)scaleX, (float)scaleY, rotation, skewX, skewY);
+        return new MatrixTransform(x, y, (float) scaleX, (float) scaleY, rotation, skewX, skewY);
     }
 
 }

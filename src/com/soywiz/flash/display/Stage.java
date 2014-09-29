@@ -4,7 +4,7 @@ import com.soywiz.flash.backend.EngineContext;
 import com.soywiz.flash.util.Color;
 
 public class Stage extends DisplayObjectContainer {
-    private EngineContext context;
+    public EngineContext context;
 
     public Stage(EngineContext context) {
         this.context = context;

@@ -148,7 +148,7 @@ public class SwingEngineContext extends EngineContext {
         g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, this.alpha));
     }
 
-    Stack<State> states = new Stack<>();
+    Stack<State> states = new Stack<State>();
 
     @Override
     public void save() {

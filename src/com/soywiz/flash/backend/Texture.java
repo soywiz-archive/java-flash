@@ -19,7 +19,7 @@ public class Texture {
         this.height = height;
     }
 
-    Texture slice(int x, int y, int width, int height) {
+    public Texture slice(int x, int y, int width, int height) {
         // @TODO: Check limits
         return new Texture(base, this.x + x, this.y + y, width, height);
     }

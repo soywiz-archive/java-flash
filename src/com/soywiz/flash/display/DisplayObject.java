@@ -23,13 +23,13 @@ abstract public class DisplayObject extends DisplayObjectBase {
     DisplayObject prev = null;
     DisplayObject next = null;
 
-    String name = null;
-    boolean updating = true;
-    double updateSpeed = 1.0;
-    List<Updatable> components = new LinkedList<>();
+    public String name = null;
+    public boolean updating = true;
+    public double updateSpeed = 1.0;
+    public List<Updatable> components = new LinkedList<Updatable>();
 
-    List<MouseUpdate> onMouseUpdate = new LinkedList<>();
-    List<SignalHandler<Point>> onMouseTapAny = new LinkedList<>();
+    public List<MouseUpdate> onMouseUpdate = new LinkedList<MouseUpdate>();
+    public List<SignalHandler<Point>> onMouseTapAny = new LinkedList<SignalHandler<Point>>();
 
     public boolean interactive() {
         return onMouseUpdate.size() > 0;

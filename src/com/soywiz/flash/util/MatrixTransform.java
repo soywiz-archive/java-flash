@@ -13,7 +13,7 @@ public class MatrixTransform {
         this.skewY = skewY;
     }
 
-    static MatrixTransform fromMatrix(Matrix matrix) {
+    static public MatrixTransform fromMatrix(Matrix matrix) {
         float M_PI_4 = (float) (Math.PI / 4.0);
         float rotation = 0;
         float skewX = 0;

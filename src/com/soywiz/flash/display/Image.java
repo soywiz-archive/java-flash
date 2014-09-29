@@ -7,6 +7,10 @@ import com.soywiz.flash.util.Rectangle;
 public class Image extends DisplayObject {
     private Texture texture;
 
+    public Image(Texture texture) {
+        this.texture = texture;
+    }
+
     @Override
     protected void renderInternal(EngineContext context) {
         context.drawImage(texture.width, texture.height, texture);

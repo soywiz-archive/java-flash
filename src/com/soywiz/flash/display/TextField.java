@@ -6,13 +6,13 @@ import com.soywiz.flash.util.Color;
 import com.soywiz.flash.util.Rectangle;
 
 public class TextField extends DisplayObject {
-    String text = "text";
-    String fontFamily = "Arial";
-    int width = 100;
-    int height = 100;
-    int size = 20;
-    Color color = Color.red;
-    TextAlign align = TextAlign.LEFT;
+    public String text = "text";
+    public String fontFamily = "Arial";
+    public int width = 100;
+    public int height = 100;
+    public int size = 20;
+    public Color color = Color.red;
+    public TextAlign align = TextAlign.LEFT;
 
     @Override
     protected void renderInternal(EngineContext context) {
